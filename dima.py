@@ -34,14 +34,14 @@ def random_delay(min_ms=450, max_ms=800):
     return random.randint(min_ms, max_ms)
 
 
-def init_driver_session(url, tz, coords, proxy):
+def init_driver_session(url, tz, coords):
     """Initialize a SeleniumBase driver with CDP mode."""
     driver = SB(
         uc=True,
         locale="en",
         ad_block=True,
         chromium_arg='--disable-webgl',
-        proxy=proxy
+        proxy=False
     )
     return driver, url, tz, coords
 
