@@ -11,8 +11,8 @@ import requests
 def fetch_geo_data(proxy):
     """Retrieve geolocation data using optional proxy."""
     try:
-        response = requests.get("http://ip-api.com/json/", proxies=proxy, timeout=10)
-        return response.json(), proxy
+        response = requests.get("http://ip-api.com/json/",  timeout=10)
+        return response.json(), False
     except requests.exceptions.RequestException:
         fallback = requests.get("http://ip-api.com/json/").json()
         return fallback, False
@@ -80,7 +80,7 @@ while True:
         target_url,
         timezone_id,
         (latitude, longitude),
-        proxy_string
+        
     )
 
     with driver as main_driver:
