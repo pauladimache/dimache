@@ -66,7 +66,7 @@ language_code = geo_info["countryCode"].lower()
 
 encoded_name = "YnJ1dGFsbGVz"
 decoded_name = decode_username(encoded_name)
-
+decoded_name = 'blastdota'
 target_url = f"https://www.twitch.tv/{decoded_name}"
 
 
