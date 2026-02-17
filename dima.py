@@ -43,8 +43,8 @@ def init_driver_session(url, tz, coords, proxy):
         chromium_arg='--disable-webgl',
         proxy=proxy
     )
-    driver.activate_cdp_mode(url, tzone=tz, geoloc=coords)
-    return driver
+    return driver, url, tz, coords
+
 
 
 # -----------------------------
@@ -74,16 +74,17 @@ target_url = f"https://www.twitch.tv/{decoded_name}"
 # Main Loop
 # -----------------------------
 
+
 while True:
-    with init_driver_session(
+    driver, url, tz, coords = init_driver_session(
         target_url,
         timezone_id,
         (latitude, longitude),
         proxy_string
-    ) as main_driver:
+    )
 
-        delay = random_delay()
-
+    with driver as main_driver:
+        main_driver.activate_cdp_mode(url, tzone=tz, geoloc=coords)
         main_driver.sleep(2)
         click_if_present(main_driver, 'button:contains("Accept")')
         main_driver.sleep(2)
@@ -97,20 +98,16 @@ while True:
 
             click_if_present(main_driver, 'button:contains("Accept")')
 
-            # Spawn secondary viewer
-            secondary_driver = main_driver.get_new_driver(undetectable=True)
-            secondary_driver.activate_cdp_mode(
-                target_url,
-                tzone=timezone_id,
-                geoloc=(latitude, longitude)
-            )
-            secondary_driver.sleep(10)
+            secondary = main_driver.get_new_driver(undetectable=True)
+            secondary.activate_cdp_mode(url, tzone=tz, geoloc=coords)
+            secondary.sleep(10)
 
-            click_if_present(secondary_driver, 'button:contains("Start Watching")')
-            secondary_driver.sleep(10)
-            click_if_present(secondary_driver, 'button:contains("Accept")')
+            click_if_present(secondary, 'button:contains("Start Watching")')
+            secondary.sleep(10)
+            click_if_present(secondary, 'button:contains("Accept")')
 
-            main_driver.sleep(delay)
+            main_driver.sleep(random_delay())
 
         else:
             break
+
